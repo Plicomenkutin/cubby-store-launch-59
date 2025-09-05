@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { mockCategories } from '@/data/mockData';
+import { useStore } from '@/contexts/StoreContext';
 import { Category } from '@/types';
 import {
   Dialog,
@@ -19,23 +19,26 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 export function Categories() {
-  const [categories, setCategories] = useState<Category[]>(mockCategories.filter(cat => cat.slug !== 'todos'));
+  const { categories, addCategory, updateCategory, deleteCategory } = useStore();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [newCategoryName, setNewCategoryName] = useState('');
   const { toast } = useToast();
 
+  // Filter out 'todos' category for editing
+  const editableCategories = categories.filter(cat => cat.slug !== 'todos');
+
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
     
-    const newCategory: Category = {
-      id: Date.now().toString(),
-      name: newCategoryName,
-      slug: newCategoryName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-    };
+    const slug = newCategoryName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     
-    setCategories([...categories, newCategory]);
+    addCategory({
+      name: newCategoryName,
+      slug,
+    });
+    
     setNewCategoryName('');
     setIsAddDialogOpen(false);
     
@@ -48,11 +51,12 @@ export function Categories() {
   const handleEditCategory = () => {
     if (!editingCategory || !newCategoryName.trim()) return;
     
-    setCategories(categories.map(cat => 
-      cat.id === editingCategory.id 
-        ? { ...cat, name: newCategoryName, slug: newCategoryName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
-        : cat
-    ));
+    const slug = newCategoryName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    
+    updateCategory(editingCategory.id, {
+      name: newCategoryName,
+      slug,
+    });
     
     toast({
       title: "Categoria atualizada",
@@ -65,7 +69,7 @@ export function Categories() {
   };
 
   const handleDeleteCategory = (categoryId: string, categoryName: string) => {
-    setCategories(categories.filter(cat => cat.id !== categoryId));
+    deleteCategory(categoryId);
     
     toast({
       title: "Categoria removida",
@@ -126,7 +130,7 @@ export function Categories() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {categories.map((category) => (
+            {editableCategories.map((category) => (
               <div key={category.id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
                   <Badge variant="secondary">{category.name}</Badge>
@@ -153,7 +157,7 @@ export function Categories() {
               </div>
             ))}
             
-            {categories.length === 0 && (
+            {editableCategories.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
                   Nenhuma categoria encontrada. Adicione sua primeira categoria!

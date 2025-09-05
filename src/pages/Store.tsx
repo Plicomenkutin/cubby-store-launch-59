@@ -5,14 +5,15 @@ import { SearchBar } from '@/components/SearchBar';
 import { CategoryTabs } from '@/components/CategoryTabs';
 import { ProductCard } from '@/components/ProductCard';
 import { Cart } from '@/components/Cart';
-import { mockStore, mockCategories, mockProducts } from '@/data/mockData';
+import { useStore } from '@/contexts/StoreContext';
 
 export default function Store() {
+  const { products, categories, store } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const filteredProducts = mockProducts.filter(product => {
+  const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'todos' || product.category === activeCategory;
@@ -22,9 +23,9 @@ export default function Store() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header store={mockStore} onCartClick={() => setIsCartOpen(true)} />
+      <Header store={store} onCartClick={() => setIsCartOpen(true)} />
       
-      <Hero store={mockStore} />
+      <Hero store={store} />
       
       {/* Menu Section */}
       <section id="cardapio" className="py-12">
@@ -35,7 +36,7 @@ export default function Store() {
             
             {/* Category Tabs */}
             <CategoryTabs 
-              categories={mockCategories}
+              categories={categories}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
             />
@@ -62,17 +63,17 @@ export default function Store() {
       <footer className="border-t border-border py-8 bg-secondary/30">
         <div className="container mx-auto px-4 text-center">
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg">{mockStore.name}</h3>
-            {mockStore.socialLinks && (
+            <h3 className="font-semibold text-lg">{store.name}</h3>
+            {store.socialLinks && (
               <div className="flex justify-center gap-4">
-                {mockStore.socialLinks.instagram && (
-                  <a href={`https://instagram.com/${mockStore.socialLinks.instagram}`} 
+                {store.socialLinks.instagram && (
+                  <a href={`https://instagram.com/${store.socialLinks.instagram}`} 
                      className="text-primary hover:text-primary-dark transition-colors">
                     Instagram
                   </a>
                 )}
-                {mockStore.socialLinks.whatsapp && (
-                  <a href={`https://wa.me/${mockStore.socialLinks.whatsapp}`}
+                {store.socialLinks.whatsapp && (
+                  <a href={`https://wa.me/${store.socialLinks.whatsapp}`}
                      className="text-primary hover:text-primary-dark transition-colors">
                     WhatsApp
                   </a>
@@ -80,7 +81,7 @@ export default function Store() {
               </div>
             )}
             <p className="text-muted-foreground text-sm">
-              © 2024 {mockStore.name}. Feito com ❤️ pela MiniLojas
+              © 2024 {store.name}. Feito com ❤️ pela MiniLojas
             </p>
           </div>
         </div>
