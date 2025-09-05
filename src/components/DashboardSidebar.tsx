@@ -1,4 +1,4 @@
-import { Home, Package, ShoppingBag, Settings, BarChart3, Users } from 'lucide-react';
+import { Home, Package, ShoppingBag, Settings, BarChart3, Users, Tag } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,7 @@ import {
 const menuItems = [
   { id: 'overview', title: 'Visão Geral', icon: Home },
   { id: 'products', title: 'Produtos', icon: Package },
+  { id: 'categories', title: 'Categorias', icon: Tag },
   { id: 'orders', title: 'Pedidos', icon: ShoppingBag },
   { id: 'analytics', title: 'Relatórios', icon: BarChart3 },
   { id: 'customers', title: 'Clientes', icon: Users },

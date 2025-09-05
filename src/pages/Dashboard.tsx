@@ -4,6 +4,7 @@ import { DashboardSidebar } from '@/components/DashboardSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { Overview } from '@/components/dashboard/Overview';
 import { Products } from '@/components/dashboard/Products';
+import { Categories } from '@/components/dashboard/Categories';
 import { Orders } from '@/components/dashboard/Orders';
 import { Settings } from '@/components/dashboard/Settings';
 
@@ -16,6 +17,8 @@ export default function Dashboard() {
         return <Overview />;
       case 'products':
         return <Products />;
+      case 'categories':
+        return <Categories />;
       case 'orders':
         return <Orders />;
       case 'settings':
